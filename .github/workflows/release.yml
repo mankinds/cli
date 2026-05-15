@@ -1,0 +1,29 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  retag-major:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Re-point the mobile major tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -e
+          MAJOR="${TAG%%.*}"
+          if [[ ! "$MAJOR" =~ ^v[0-9]+$ ]]; then
+            echo "Skipping major retag: $TAG is not a semver release tag"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$MAJOR" "$TAG"
+          git push origin "$MAJOR" --force

@@ -1,0 +1,35 @@
+name: Mankinds AI Quality Gate
+description: Trigger a Mankinds agent and block a merge when the AI system regresses on the configured quality gate.
+author: Mankinds
+branding:
+  icon: shield
+  color: blue
+inputs:
+  agent:
+    description: Name or UUID of the Mankinds agent to trigger (case-insensitive).
+    required: true
+  api-key:
+    description: Mankinds API key (typically secrets.MANKINDS_API_KEY).
+    required: true
+  base-url:
+    description: Mankinds API base URL. Override for on-premise deployments.
+    required: false
+    default: https://app.mankinds.io
+  timeout-minutes:
+    description: Max time to wait for the eval to complete before failing the step.
+    required: false
+    default: '30'
+  comment-on-pr:
+    description: Post a sticky scorecard comment on the PR. Requires github.event_name == pull_request.
+    required: false
+    default: 'true'
+outputs:
+  run-id:
+    description: UUID of the Mankinds run created by this step.
+  score:
+    description: Overall score (0 to 1) returned by the scorecard.
+  gate-passed:
+    description: '"true" if the quality gate passed, "false" otherwise.'
+runs:
+  using: node20
+  main: dist/index.js

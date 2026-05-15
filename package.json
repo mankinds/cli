@@ -1,0 +1,36 @@
+{
+  "name": "@mankinds/cli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mankinds AI quality gate runner (GitHub Action + Docker CLI).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "mankinds-ci": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "ncc build src/main.ts -o dist --source-map --license licenses.txt",
+    "lint": "eslint src tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify-dist": "npm run build && git diff --exit-code dist/"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "undici": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vercel/ncc": "^0.38.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
