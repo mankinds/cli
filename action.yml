@@ -31,5 +31,5 @@ outputs:
   gate-passed:
     description: '"true" if the quality gate passed, "false" otherwise.'
 runs:
-  using: node20
+  using: node24
   main: dist/index.js

@@ -90475,7 +90475,7 @@ var undici = __nccwpck_require__(6752);
 /**
  * Thin HTTP client over the Mankinds agents endpoint.
  *
- * Uses node:undici for zero extra runtime weight (Node 20+ ships
+ * Uses node:undici for zero extra runtime weight (Node 22+ ships
  * it built-in). The class is the only place that knows the wire
  * format; callers manipulate typed AgentRun objects everywhere
  * else.
