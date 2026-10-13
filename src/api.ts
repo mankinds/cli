@@ -90,7 +90,8 @@ export class MankindsClient {
   }
 }
 
-function safeJson(text: string): Record<string, unknown> | null {
+/** Parse a response body, or null when it is not JSON. Shared with the runner. */
+export function safeJson(text: string): Record<string, unknown> | null {
   try {
     return JSON.parse(text);
   } catch {
@@ -98,7 +99,8 @@ function safeJson(text: string): Record<string, unknown> | null {
   }
 }
 
-function parseDetail(text: string): string {
+/** Pull a readable message out of a FastAPI `detail`. Shared with the runner. */
+export function parseDetail(text: string): string {
   const json = safeJson(text);
   if (json && typeof json === "object") {
     const detail = (json as { detail?: unknown }).detail;

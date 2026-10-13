@@ -1,7 +1,16 @@
 node_modules/
 build/
+lib/
+*.tgz
 coverage/
 *.log
 .DS_Store
-.env
-.env.local
+.env*
+*.pem
+*.key
+.vscode/
+.idea/
+
+# The cross-language sealing check needs both halves at once, so it lives
+# with the server side codec and is never committed here.
+tests/interop/

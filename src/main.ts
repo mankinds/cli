@@ -1,5 +1,10 @@
+#!/usr/bin/env node
 /**
  * Mankinds CI runner entry point.
+ *
+ * The shebang is load-bearing: `docker/Dockerfile` symlinks
+ * /usr/local/bin/mankinds-ci straight at the bundle, and the kernel cannot
+ * exec a JavaScript file without it. ncc carries it through to dist/index.js.
  *
  * Detects whether the process is running inside a GitHub Action
  * (GITHUB_ACTIONS=true) and dispatches to either the GHA-specific

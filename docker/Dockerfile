@@ -4,9 +4,9 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --no-audit --no-fund
-
+# No install step: dist/index.js is a self-contained ncc bundle. Installing
+# the dependencies here would add about 24 MB to the image, the Octokit stack
+# first of all, that nothing in the image ever loads.
 COPY dist /app/dist
 
 RUN ln -s /app/dist/index.js /usr/local/bin/mankinds-ci \

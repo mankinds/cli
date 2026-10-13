@@ -3,7 +3,7 @@
  * git provenance into the trigger_metadata payload persisted on
  * the run. The label is stored as trigger_source on the run so the
  * agent runs list can distinguish gitlab_ci from github_actions
- * from a generic ci without enlarging the backend enum.
+ * from a generic ci.
  */
 
 import * as fs from "node:fs";

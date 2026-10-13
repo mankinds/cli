@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import './sourcemap-register.cjs';import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -90530,6 +90531,7 @@ class MankindsClient {
         return json;
     }
 }
+/** Parse a response body, or null when it is not JSON. Shared with the runner. */
 function safeJson(text) {
     try {
         return JSON.parse(text);
@@ -90538,6 +90540,7 @@ function safeJson(text) {
         return null;
     }
 }
+/** Pull a readable message out of a FastAPI `detail`. Shared with the runner. */
 function parseDetail(text) {
     const json = safeJson(text);
     if (json && typeof json === "object") {
@@ -90562,7 +90565,7 @@ const external_node_fs_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import
  * git provenance into the trigger_metadata payload persisted on
  * the run. The label is stored as trigger_source on the run so the
  * agent runs list can distinguish gitlab_ci from github_actions
- * from a generic ci without enlarging the backend enum.
+ * from a generic ci.
  */
 
 function detectProvider() {
@@ -90812,12 +90815,21 @@ async function upsertStickyComment(octokit, body) {
 
 ;// CONCATENATED MODULE: ./src/exit_codes.ts
 /**
- * Documented exit codes for the CI runner. Imported by callers
- * instead of hard-coding integers.
+ * Documented exit codes, imported by callers instead of hard-coding
+ * integers. 0 to 2 are the CI runner's, and are part of its published
+ * contract; the local runner reuses them and adds its own above.
  */
 const EXIT_OK = 0;
 const EXIT_GATE_FAILED = 1;
 const EXIT_INFRA_ERROR = 2;
+/**
+ * `dev` only: another runner already holds this connection.
+ *
+ * Distinct from EXIT_INFRA_ERROR because it is not a fault to retry: the
+ * refusal stands for as long as the holder keeps polling, and a script can
+ * tell the two apart without parsing output.
+ */
+const EXIT_RUNNER_BUSY = 3;
 
 ;// CONCATENATED MODULE: ./src/action.ts
 /**
@@ -90984,6 +90996,10 @@ MANKINDS_API_KEY env var.
 ;// CONCATENATED MODULE: ./src/main.ts
 /**
  * Mankinds CI runner entry point.
+ *
+ * The shebang is load-bearing: `docker/Dockerfile` symlinks
+ * /usr/local/bin/mankinds-ci straight at the bundle, and the kernel cannot
+ * exec a JavaScript file without it. ncc carries it through to dist/index.js.
  *
  * Detects whether the process is running inside a GitHub Action
  * (GITHUB_ACTIONS=true) and dispatches to either the GHA-specific

@@ -1,36 +1,66 @@
 {
   "name": "@mankinds/cli",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Mankinds AI quality gate runner (GitHub Action + Docker CLI).",
+  "version": "1.1.0",
+  "description": "Mankinds CLI: serve a connection from your machine (dev), diagnose a local target (doctor), and run the CI quality gate.",
   "license": "Apache-2.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mankinds/cli.git"
+  },
+  "homepage": "https://github.com/mankinds/cli#readme",
+  "bugs": {
+    "url": "https://github.com/mankinds/cli/issues"
+  },
+  "keywords": [
+    "mankinds",
+    "ai",
+    "evaluation",
+    "quality-gate",
+    "ci",
+    "local-runner"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
-    "mankinds-ci": "./dist/index.js"
+    "cli": "./lib/bin.js",
+    "mankinds": "./lib/bin.js",
+    "mankinds-ci": "./lib/ci.js"
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "build": "ncc build src/main.ts -o dist --source-map --license licenses.txt",
+    "build": "npm run build:action && npm run build:lib",
+    "build:action": "ncc build src/main.ts -o dist --source-map --license licenses.txt && node scripts/strip-sourcemap-content.mjs",
+    "build:lib": "tsc --project tsconfig.lib.json",
     "lint": "eslint src tests",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify-dist": "npm run build && git diff --exit-code dist/"
+    "verify-dist": "npm run build:action && git diff --exit-code dist/",
+    "prepack": "npm run build:lib"
   },
   "dependencies": {
-    "@actions/core": "^1.11.0",
-    "@actions/github": "^6.0.0",
+    "libsodium-wrappers": "^0.7.16",
     "undici": "^7.0.0"
   },
   "devDependencies": {
+    "@types/libsodium-wrappers": "^0.7.14",
     "@types/node": "^24.12.4",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vercel/ncc": "^0.38.0",
     "eslint": "^9.0.0",
     "typescript": "^5.5.0",
-    "vitest": "^2.0.0"
-  },
-  "engines": {
-    "node": ">=22"
+    "vitest": "^2.0.0",
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0"
   }
 }

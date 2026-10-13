@@ -1,0 +1,24 @@
+{
+  "// why": [
+    "The npm package is plain tsc output, not an ncc bundle.",
+    "dist/ stays what it is, the GitHub Action's committed bundle, and is",
+    "excluded from the tarball: nobody running `npx @mankinds/cli dev`",
+    "should download the Octokit stack it carries.",
+    "NodeNext rather than the Bundler resolution of tsconfig.json, because",
+    "this output is loaded by Node itself and the explicit .js specifiers",
+    "have to survive as written."
+  ],
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": true,
+    "noEmit": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/action.ts", "src/pr_comment.ts", "src/main.ts"]
+}
