@@ -1,6 +1,6 @@
 {
   "name": "@mankinds/cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Mankinds CLI: serve a connection from your machine (dev), diagnose a local target (doctor), and run the CI quality gate.",
   "license": "Apache-2.0",
   "type": "module",
