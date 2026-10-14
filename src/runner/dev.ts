@@ -220,7 +220,8 @@ async function handleRequest(
 
   const { request, replyPublicKey } = opened;
   // Safe label only: method and path. Never the headers or the body.
-  ctx.log.info(safeRequestLabel(request.method, request.url));
+  // Logged once, on completion, so concurrent requests stay readable.
+  const label = safeRequestLabel(request.method, request.url);
 
   const budget = Math.min(request.timeout_ms, Math.max(remaining, 1));
   const result = await executeRelayRequest(
@@ -230,16 +231,16 @@ async function handleRequest(
   );
 
   if (result.error !== null) {
-    ctx.log.warn(`  ${result.error}${result.error_detail ? `: ${result.error_detail}` : ""}`);
+    ctx.log.warn(`${label} → ${result.error}${result.error_detail ? `: ${result.error_detail}` : ""}`);
   } else {
-    ctx.log.info(`  ${result.status_code} in ${result.latency_ms}ms`);
+    ctx.log.info(`${label} → ${result.status_code} in ${result.latency_ms}ms`);
   }
 
   let sealed = await sealResult(result, replyPublicKey);
   if (sealed === null) {
     // Too large to travel sealed. That is what `response_too_large` means,
     // so report it rather than letting the caller time out.
-    ctx.log.warn("  response too large to relay");
+    ctx.log.warn(`${label} → response too large to relay`);
     sealed = await sealResult(
       {
         ...result,
